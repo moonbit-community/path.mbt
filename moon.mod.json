@@ -2,8 +2,8 @@
   "name": "Kaida-Amethyst/path",
   "version": "0.1.0",
   "readme": "README.md",
-  "repository": "",
+  "repository": "https://github.com/Kaida-Amethyst/path.mbt",
   "license": "Apache-2.0",
-  "keywords": [],
-  "description": ""
+  "keywords": ["path"],
+  "description": "A cross-platform file path manipulation library for MoonBit, supporting both Unix and Windows platforms."
 }
