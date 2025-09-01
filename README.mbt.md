@@ -27,7 +27,7 @@ test "Basic Path Operations" {
   inspect(path.to_string(), content="/home/user/documents/file.txt")
   
   // Pop the last component
-  path.pop()
+  let _ = path.pop()
   inspect(path.to_string(), content="/home/user/documents")
 }
 ```
@@ -85,7 +85,7 @@ path.push("sub/dir") // Automatically split into "sub" and "dir"
 Removes the last component from the path.
 
 ```moonbit skip
-path.pop()
+let _ = path.pop()
 ```
 
 #### `Path::to_string(self: Path) -> String`
@@ -134,7 +134,7 @@ test "基本路径操作" {
   inspect(path.to_string(), content="/home/user/documents/file.txt")
   
   // 移除最后一个组件
-  path.pop()
+  let _ = path.pop()
   inspect(path.to_string(), content="/home/user/documents")
 }
 ```

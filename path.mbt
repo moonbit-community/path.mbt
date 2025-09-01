@@ -27,6 +27,15 @@ fn get_separator() -> String {
 }
 
 ///|
+/// 获取当前工作目录
+fn get_current_dir() -> String {
+  match @env.current_dir() {
+    Some(dir) => dir
+    None => "unknown"
+  }
+}
+
+///|
 /// 检查字符是否为路径分隔符
 fn is_separator(c : String) -> Bool {
   if platform == "windows" {
@@ -47,9 +56,13 @@ fn is_separator(c : String) -> Bool {
 /// 返回新的Path对象
 /// 
 /// # 示例
-/// 
-/// Path::new("/home/user/file.txt") 创建绝对路径
-/// Path::new("relative/path") 创建相对路径
+/// ```mbt
+/// let p1 = Path::new("/home/user/file.txt") //  创建绝对路径
+/// let p2 = Path::new("relative/path") // 创建相对路径
+///
+/// inspect(p1, content="/home/user/file.txt")
+/// inspect(p2, content="relative/path")
+/// ```
 pub fn Path::new(path_str : String) -> Path {
   if path_str == "" {
     return { components: [], is_absolute: false }
@@ -130,14 +143,14 @@ pub fn Path::push(self : Path, component : String) -> Unit {
     return
   }
   if component == ".." {
-    self.pop()
+    let _ = self.pop()
   } else {
     // 如果组件包含分隔符，需要分割
     let parts = split_path(component)
     for part in parts {
       if part != "" && part != "." {
         if part == ".." {
-          self.pop()
+          let _ = self.pop()
         } else {
           self.components.push(part)
         }
@@ -150,18 +163,112 @@ pub fn Path::push(self : Path, component : String) -> Unit {
 /// 移除路径的最后一个组件
 /// 
 /// # 示例
-/// ```
+/// ```mbt
 /// let p = Path::new("/home/user/file.txt")
-/// p.pop() // 现在路径是 "/home/user"
+/// let _ = p.pop() // 现在路径是 "/home/user"
+/// inspect(p, content="/home/user")
 /// ```
-pub fn Path::pop(self : Path) -> Unit {
+pub fn Path::pop(self : Path) -> String? {
   if self.components.length() > 0 {
-    self.components.pop() |> ignore
+    self.components.pop()
+  } else {
+    None
   }
 }
 
 ///|
-/// Show trait实现
+pub fn Path::is_dir(self : Path) -> Bool {
+  let s = self.to_string()
+  @fs.is_dir(s) catch {
+    _ => false
+  }
+}
+
+///|
+pub fn Path::is_file(self : Path) -> Bool {
+  let s = self.to_string()
+  @fs.is_file(s) catch {
+    _ => false
+  }
+}
+
+///|
+pub fn Path::is_exists(self : Path) -> Bool {
+  let s = self.to_string()
+  @fs.path_exists(s)
+}
+
+///|
+pub fn Path::file_name(self: Path) -> String? {
+  let len = self.components.length()
+  if len > 0 {
+    if self.is_file() {
+      Some(self.components[len - 1])
+    } else {
+      None
+    }
+  } else {
+    None
+  }
+}
+
+///|
+/// 将路径转换为绝对路径
+/// 如果路径已经是绝对路径，则直接返回其字符串表示
+/// 如果是相对路径，则与当前工作目录组合生成绝对路径
+/// 
+/// # 返回值
+/// 返回绝对路径的字符串表示
+/// 
+/// # 示例
+pub fn Path::to_absolute(self : Path) -> String {
+  if self.is_absolute {
+    self.to_string()
+  } else {
+    let current_dir = get_current_dir()
+    let current_path = Path::new(current_dir)
+    // 将当前路径的组件复制到新的组件数组中
+    let absolute_components = Array::new()
+    for component in current_path.components {
+      absolute_components.push(component)
+    }
+    // 添加相对路径的组件
+    for component in self.components {
+      if component == ".." {
+        // 处理父目录
+        if absolute_components.length() > 0 {
+          absolute_components.pop() |> ignore
+        }
+      } else {
+        absolute_components.push(component)
+      }
+    }
+
+    // 构建绝对路径字符串
+    let sep = get_separator()
+    if absolute_components.length() == 0 {
+      sep
+    } else {
+      let mut result = sep
+      for i = 0; i < absolute_components.length(); i = i + 1 {
+        if i > 0 {
+          result = result + sep
+        }
+        result = result + absolute_components[i]
+      }
+      result
+    }
+  }
+}
+
+///|
+///
+/// ```mbt
+/// let p1 = Path::new("/home/user/file.txt")
+/// let p2 = Path::new("relative/path")
+/// inspect(p1.to_string(), content="/home/user/file.txt")
+/// inspect(p2.to_string(), content="relative/path")
+/// ```
 pub impl Show for Path with output(self, logger) {
   let sep = get_separator()
   let s = if self.is_absolute {

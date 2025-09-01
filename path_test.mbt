@@ -46,14 +46,14 @@ test "Path::push - 父目录处理" {
 ///|
 test "Path::pop - 移除组件" {
   let path = Path::new("/home/user/documents/file.txt")
-  path.pop()
+  let _ = path.pop()
   inspect(path.to_string(), content="/home/user/documents")
-  path.pop()
+  let _ = path.pop()
   inspect(path.to_string(), content="/home/user")
 
   // 测试空路径的pop
   let empty_path = Path::new("")
-  empty_path.pop()
+  let _ = empty_path.pop()
   inspect(empty_path.to_string(), content=".")
 }
 
@@ -93,8 +93,81 @@ test "复杂路径操作序列" {
   inspect(path.to_string(), content="/home/user/documents")
   path.push("../downloads")
   inspect(path.to_string(), content="/home/user/downloads")
-  path.pop()
+  let _ = path.pop()
   path.push("desktop")
   path.push("project")
   inspect(path.to_string(), content="/home/user/desktop/project")
+}
+
+///|
+test "Path::to_absolute - 相对路径转绝对路径" {
+  // 测试绝对路径保持不变
+  let abs_path = Path::new("/home/user/file.txt")
+  inspect(abs_path.to_absolute(), content="/home/user/file.txt")
+
+  // 测试相对路径转换为绝对路径
+  let rel_path = Path::new("relative/path")
+  let abs_result = rel_path.to_absolute()
+  // 绝对路径应该以/开头且包含原路径
+  match abs_result.strip_prefix("/") {
+    Some(_) => () // 以/开头，正确
+    None =>
+      if abs_result != "unknown" {
+        fail("Absolute path should start with / or be 'unknown'")
+      }
+  }
+  if abs_result != "unknown" && not(abs_result.contains("relative/path")) {
+    fail("Absolute path should contain the relative path")
+  }
+}
+
+///|
+test "Path::to_string vs to_absolute 区别" {
+  // 测试绝对路径：to_string和to_absolute应该相同
+  let abs_path = Path::new("/home/user/file.txt")
+  inspect(abs_path.to_string(), content="/home/user/file.txt")
+  inspect(abs_path.to_absolute(), content="/home/user/file.txt")
+
+  // 测试相对路径：to_string保持相对，to_absolute返回绝对
+  let rel_path = Path::new("relative/path")
+  inspect(rel_path.to_string(), content="relative/path")
+  let abs_result = rel_path.to_absolute()
+  // 验证to_absolute返回的是绝对路径
+  match abs_result.strip_prefix("/") {
+    Some(_) => () // 以/开头，正确
+    None =>
+      if abs_result != "unknown" {
+        fail("to_absolute should return absolute path or 'unknown'")
+      }
+  }
+
+  // 验证两者不同
+  if rel_path.to_string() == abs_result {
+    fail("to_string and to_absolute should differ for relative paths")
+  }
+}
+
+///|
+test "当前目录处理特殊情况" {
+  // 测试空路径
+  let empty_path = Path::new("")
+  let abs_empty = empty_path.to_absolute()
+  match abs_empty.strip_prefix("/") {
+    Some(_) => () // 以/开头，正确
+    None =>
+      if abs_empty != "unknown" {
+        fail("Empty path should resolve to absolute path or 'unknown'")
+      }
+  }
+
+  // 测试当前目录
+  let current_path = Path::new(".")
+  let abs_current = current_path.to_absolute()
+  match abs_current.strip_prefix("/") {
+    Some(_) => () // 以/开头，正确
+    None =>
+      if abs_current != "unknown" {
+        fail("Current directory should resolve to absolute path or 'unknown'")
+      }
+  }
 }
