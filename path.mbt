@@ -144,6 +144,7 @@ pub fn Path::push(self : Path, component : String) -> Unit {
   }
   if component == ".." {
     let _ = self.pop()
+
   } else {
     // 如果组件包含分隔符，需要分割
     let parts = split_path(component)
@@ -151,6 +152,7 @@ pub fn Path::push(self : Path, component : String) -> Unit {
       if part != "" && part != "." {
         if part == ".." {
           let _ = self.pop()
+
         } else {
           self.components.push(part)
         }
@@ -199,7 +201,7 @@ pub fn Path::is_exists(self : Path) -> Bool {
 }
 
 ///|
-pub fn Path::file_name(self: Path) -> String? {
+pub fn Path::file_name(self : Path) -> String? {
   let len = self.components.length()
   if len > 0 {
     if self.is_file() {
@@ -209,6 +211,20 @@ pub fn Path::file_name(self: Path) -> String? {
     }
   } else {
     None
+  }
+}
+
+///|
+pub fn Path::parent(self : Path) -> Path? {
+  let len = self.components.length()
+  if len == 0 {
+    None
+  } else {
+    let parent_components = Array::new()
+    for i = 0; i < len - 1; i = i + 1 {
+      parent_components.push(self.components[i])
+    }
+    Some({ components: parent_components, is_absolute: self.is_absolute })
   }
 }
 

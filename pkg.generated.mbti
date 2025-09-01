@@ -1,5 +1,5 @@
 // Generated using `moon info`, DON'T EDIT IT
-package "username/path"
+package "Kaida-Amethyst/path"
 
 // Values
 
@@ -10,9 +10,15 @@ pub struct Path {
   components : Array[String]
   is_absolute : Bool
 }
+fn Path::file_name(Self) -> String?
+fn Path::is_dir(Self) -> Bool
+fn Path::is_exists(Self) -> Bool
+fn Path::is_file(Self) -> Bool
 fn Path::new(String) -> Self
-fn Path::pop(Self) -> Unit
+fn Path::parent(Self) -> Self?
+fn Path::pop(Self) -> String?
 fn Path::push(Self, String) -> Unit
+fn Path::to_absolute(Self) -> String
 impl Show for Path
 
 // Type aliases
