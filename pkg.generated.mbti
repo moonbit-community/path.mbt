@@ -1,0 +1,21 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "username/path"
+
+// Values
+
+// Errors
+
+// Types and methods
+pub struct Path {
+  components : Array[String]
+  is_absolute : Bool
+}
+fn Path::new(String) -> Self
+fn Path::pop(Self) -> Unit
+fn Path::push(Self, String) -> Unit
+impl Show for Path
+
+// Type aliases
+
+// Traits
+
