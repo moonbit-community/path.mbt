@@ -16,16 +16,17 @@ A powerful, cross-platform file path manipulation library for MoonBit, providing
 ### Basic Usage
 
 ```moonbit
+///|
 test "Basic Path Operations" {
   // Create a new path
   let path = @path.Path::new("/home/user")
   inspect(path.to_string(), content="/home/user")
-  
+
   // Push new components
   path.push("documents")
   path.push("file.txt")
   inspect(path.to_string(), content="/home/user/documents/file.txt")
-  
+
   // Pop the last component
   let _ = path.pop()
   inspect(path.to_string(), content="/home/user/documents")
@@ -37,10 +38,10 @@ test "Basic Path Operations" {
 The library automatically cleans up paths, resolving `.` and `..`.
 
 ```moonbit
+///|
 test "Path Normalization" {
   let path = @path.Path::new("/home/user/../documents/./file.txt")
   inspect(path.to_string(), content="/home/documents/file.txt")
-  
   let relative = @path.Path::new("src/../lib/./utils")
   inspect(relative.to_string(), content="lib/utils")
 }
@@ -123,16 +124,17 @@ This project is licensed under the Apache-2.0 License.
 ### 基本使用
 
 ```moonbit
+///|
 test "基本路径操作" {
   // 创建一个新路径
   let path = @path.Path::new("/home/user")
   inspect(path.to_string(), content="/home/user")
-  
+
   // 添加新的路径组件
   path.push("documents")
   path.push("file.txt")
   inspect(path.to_string(), content="/home/user/documents/file.txt")
-  
+
   // 移除最后一个组件
   let _ = path.pop()
   inspect(path.to_string(), content="/home/user/documents")
@@ -144,10 +146,10 @@ test "基本路径操作" {
 该库会自动清理路径，解析 `.` 和 `..`。
 
 ```moonbit
+///|
 test "路径规范化" {
   let path = @path.Path::new("/home/user/../documents/./file.txt")
   inspect(path.to_string(), content="/home/documents/file.txt")
-  
   let relative = @path.Path::new("src/../lib/./utils")
   inspect(relative.to_string(), content="lib/utils")
 }
