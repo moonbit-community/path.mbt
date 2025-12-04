@@ -71,7 +71,7 @@ pub fn Path::new(path_str : String) -> Path {
     // Windows: 检查是否以驱动器字母开头或UNC路径
     path_str.length() >= 2 &&
     (
-      path_str.substring(start=1, end=2) == ":" ||
+      (path_str[1:2].to_string() catch { _ => "" }) == ":" ||
       path_str.strip_prefix("\\\\") != None
     )
   } else {
@@ -110,7 +110,7 @@ fn split_path(path : String) -> Array[String] {
   let result = Array::new()
   let mut current = ""
   for i = 0; i < path.length(); i = i + 1 {
-    let char = path.substring(start=i, end=i + 1)
+    let char = path[i:i + 1].to_string() catch { _ => "" }
     if is_separator(char) {
       if current != "" {
         result.push(current)
@@ -292,7 +292,8 @@ pub impl Show for Path with output(self, logger) {
       // Windows绝对路径处理
       if self.components.length() > 0 {
         let first = self.components[0]
-        if first.length() == 2 && first.substring(start=1, end=2) == ":" {
+        if first.length() == 2 &&
+          (first[1:2].to_string() catch { _ => "" }) == ":" {
           // 驱动器路径
           let mut result = first + sep
           for i = 1; i < self.components.length(); i = i + 1 {

@@ -10,16 +10,16 @@ pub struct Path {
   components : Array[String]
   is_absolute : Bool
 }
-fn Path::file_name(Self) -> String?
-fn Path::is_dir(Self) -> Bool
-fn Path::is_exists(Self) -> Bool
-fn Path::is_file(Self) -> Bool
-fn Path::new(String) -> Self
-fn Path::parent(Self) -> Self?
-fn Path::pop(Self) -> String?
-fn Path::push(Self, String) -> Unit
-fn Path::to_absolute(Self) -> String
-impl Show for Path
+pub fn Path::file_name(Self) -> String?
+pub fn Path::is_dir(Self) -> Bool
+pub fn Path::is_exists(Self) -> Bool
+pub fn Path::is_file(Self) -> Bool
+pub fn Path::new(String) -> Self
+pub fn Path::parent(Self) -> Self?
+pub fn Path::pop(Self) -> String?
+pub fn Path::push(Self, String) -> Unit
+pub fn Path::to_absolute(Self) -> String
+pub impl Show for Path
 
 // Type aliases
 

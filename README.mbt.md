@@ -70,7 +70,10 @@ Represents a file system path.
 Creates a new `Path` object from a string.
 
 ```moonbit skip
+///|
 let path = Path::new("/home/user/file.txt")
+
+///|
 let relative = Path::new("src/lib")
 ```
 
@@ -178,7 +181,10 @@ test "路径规范化" {
 从字符串创建一个新的 `Path` 对象。
 
 ```moonbit skip
+///|
 let path = Path::new("/home/user/file.txt")
+
+///|
 let relative = Path::new("src/lib")
 ```
 
