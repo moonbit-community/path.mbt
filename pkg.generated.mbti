@@ -10,15 +10,22 @@ pub struct Path {
   components : Array[String]
   is_absolute : Bool
 }
+pub fn Path::ends_with(Self, Self) -> Bool
+pub fn Path::extension(Self) -> String?
 pub fn Path::file_name(Self) -> String?
+pub fn Path::file_stem(Self) -> String?
 pub fn Path::is_dir(Self) -> Bool
 pub fn Path::is_exists(Self) -> Bool
 pub fn Path::is_file(Self) -> Bool
+pub fn Path::join(Self, Array[String]) -> Self
 pub fn Path::new(String) -> Self
 pub fn Path::parent(Self) -> Self?
 pub fn Path::pop(Self) -> String?
 pub fn Path::push(Self, String) -> Unit
+pub fn Path::starts_with(Self, Self) -> Bool
 pub fn Path::to_absolute(Self) -> String
+pub fn Path::to_string(Self) -> String
+pub fn Path::with_extension(Self, String) -> Self
 pub impl Show for Path
 
 // Type aliases
