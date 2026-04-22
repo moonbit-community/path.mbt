@@ -370,13 +370,13 @@ pub fn Path::extension(self : Path) -> String? {
     Some(name) => {
       let mut last_dot = -1
       for i = name.length() - 1; i >= 0; i = i - 1 {
-        if name.substring(start=i, end=i + 1) == "." {
+        if name[i:i + 1].to_string() == "." {
           last_dot = i
           break
         }
       }
       if last_dot > 0 && last_dot < name.length() - 1 {
-        Some(name.substring(start=last_dot + 1, end=name.length()))
+        Some(name[last_dot + 1:name.length()].to_string())
       } else {
         None
       }
@@ -403,13 +403,13 @@ pub fn Path::file_stem(self : Path) -> String? {
     Some(name) => {
       let mut last_dot = -1
       for i = name.length() - 1; i >= 0; i = i - 1 {
-        if name.substring(start=i, end=i + 1) == "." {
+        if name[i:i + 1].to_string() == "." {
           last_dot = i
           break
         }
       }
       if last_dot > 0 {
-        Some(name.substring(start=0, end=last_dot))
+        Some(name[0:last_dot].to_string())
       } else {
         Some(name)
       }
@@ -447,14 +447,14 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
   let last_component = self.components[self.components.length() - 1]
   let mut last_dot = -1
   for i = last_component.length() - 1; i >= 0; i = i - 1 {
-    if last_component.substring(start=i, end=i + 1) == "." {
+    if last_component[i:i + 1].to_string() == "." {
       last_dot = i
       break
     }
   }
   
   let stem = if last_dot > 0 {
-    last_component.substring(start=0, end=last_dot)
+    last_component[0:last_dot].to_string()
   } else {
     last_component
   }
