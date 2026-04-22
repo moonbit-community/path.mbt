@@ -93,7 +93,7 @@ pub fn Path::new(path_str : String) -> Path {
           } else {
             components.push(part)
           }
-        } else if not(is_abs) {
+        } else if !is_abs {
           components.push(part)
         }
       } else {
@@ -215,7 +215,7 @@ pub fn Path::parent(self : Path) -> Path? {
   let len = self.components.length()
   if len == 0 {
     None
-  } else if len == 1 && not(self.is_absolute) {
+  } else if len == 1 && !self.is_absolute {
     Some({ components: [], is_absolute: false })
   } else {
     let parent_components = Array::new()

@@ -116,7 +116,7 @@ test "Path::to_absolute - 相对路径转绝对路径" {
         fail("Absolute path should start with / or be 'unknown'")
       }
   }
-  if abs_result != "unknown" && not(abs_result.contains("relative/path")) {
+  if abs_result != "unknown" && !abs_result.contains("relative/path") {
     fail("Absolute path should contain the relative path")
   }
 }
