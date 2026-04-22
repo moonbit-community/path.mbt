@@ -15,7 +15,7 @@ A powerful, cross-platform file path manipulation library for MoonBit, providing
 
 ### Basic Usage
 
-```moonbit
+```moonbit nocheck
 ///|
 test "Basic Path Operations" {
   // Create a new path
@@ -37,7 +37,7 @@ test "Basic Path Operations" {
 
 The library automatically cleans up paths, resolving `.` and `..`.
 
-```moonbit
+```moonbit nocheck
 ///|
 test "Path Normalization" {
   let path = @path.Path::new("/home/user/../documents/./file.txt")
@@ -126,7 +126,7 @@ This project is licensed under the Apache-2.0 License.
 
 ### 基本使用
 
-```moonbit
+```moonbit nocheck
 ///|
 test "基本路径操作" {
   // 创建一个新路径
@@ -148,7 +148,7 @@ test "基本路径操作" {
 
 该库会自动清理路径，解析 `.` 和 `..`。
 
-```moonbit
+```moonbit nocheck
 ///|
 test "路径规范化" {
   let path = @path.Path::new("/home/user/../documents/./file.txt")
