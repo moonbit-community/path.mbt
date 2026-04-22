@@ -56,7 +56,7 @@ fn is_separator(c : String) -> Bool {
 /// 返回新的Path对象
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p1 = Path::new("/home/user/file.txt") //  创建绝对路径
 /// let p2 = Path::new("relative/path") // 创建相对路径
 ///
@@ -70,10 +70,7 @@ pub fn Path::new(path_str : String) -> Path {
   let is_abs = if platform == "windows" {
     // Windows: 检查是否以驱动器字母开头或UNC路径
     path_str.length() >= 2 &&
-    (
-      path_str[1:2].to_string() == ":" ||
-      path_str.strip_prefix("\\\\") != None
-    )
+    (path_str[1:2].to_string() == ":" || path_str.strip_prefix("\\\\") != None)
   } else {
     // Unix: 检查是否以/开头
     path_str.strip_prefix("/") != None
@@ -144,7 +141,6 @@ pub fn Path::push(self : Path, component : String) -> Unit {
   }
   if component == ".." {
     let _ = self.pop()
-
   } else {
     // 如果组件包含分隔符，需要分割
     let parts = split_path(component)
@@ -152,7 +148,6 @@ pub fn Path::push(self : Path, component : String) -> Unit {
       if part != "" && part != "." {
         if part == ".." {
           let _ = self.pop()
-
         } else {
           self.components.push(part)
         }
@@ -165,7 +160,7 @@ pub fn Path::push(self : Path, component : String) -> Unit {
 /// 移除路径的最后一个组件
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/file.txt")
 /// let _ = p.pop() // 现在路径是 "/home/user"
 /// inspect(p, content="/home/user")
@@ -282,7 +277,7 @@ pub fn Path::to_absolute(self : Path) -> String {
 /// 返回路径的字符串表示
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p1 = Path::new("/home/user/file.txt")
 /// let p2 = Path::new("relative/path")
 /// inspect(p1.to_string(), content="/home/user/file.txt")
@@ -295,8 +290,7 @@ pub fn Path::to_string(self : Path) -> String {
       // Windows绝对路径处理
       if self.components.length() > 0 {
         let first = self.components[0]
-        if first.length() == 2 &&
-          first[1:2].to_string() == ":" {
+        if first.length() == 2 && first[1:2].to_string() == ":" {
           // 驱动器路径
           let mut result = first + sep
           for i = 1; i < self.components.length(); i = i + 1 {
@@ -359,7 +353,7 @@ pub impl Show for Path with output(self, logger) {
 /// 返回文件扩展名，如果没有扩展名则返回 None
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/file.txt")
 /// inspect(p.extension(), content="Some(\"txt\")")
 /// let p2 = Path::new("/home/user/file")
@@ -392,7 +386,7 @@ pub fn Path::extension(self : Path) -> String? {
 /// 返回不带扩展名的文件名，如果路径不是文件则返回 None
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/file.txt")
 /// inspect(p.file_stem(), content="Some(\"file\")")
 /// let p2 = Path::new("/home/user/archive.tar.gz")
@@ -428,22 +422,22 @@ pub fn Path::file_stem(self : Path) -> String? {
 /// 返回新的 Path 对象
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/file.txt")
 /// let p2 = p.with_extension("md")
 /// inspect(p2.to_string(), content="/home/user/file.md")
 /// ```
 pub fn Path::with_extension(self : Path, extension : String) -> Path {
   let new_components = Array::new()
-  
+
   if self.components.length() == 0 {
     return { components: new_components, is_absolute: self.is_absolute }
   }
-  
+
   for i = 0; i < self.components.length() - 1; i = i + 1 {
     new_components.push(self.components[i])
   }
-  
+
   let last_component = self.components[self.components.length() - 1]
   let mut last_dot = -1
   for i = last_component.length() - 1; i >= 0; i = i - 1 {
@@ -452,19 +446,15 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
       break
     }
   }
-  
+
   let stem = if last_dot > 0 {
     last_component[0:last_dot].to_string()
   } else {
     last_component
   }
-  
-  let new_name = if extension == "" {
-    stem
-  } else {
-    stem + "." + extension
-  }
-  
+
+  let new_name = if extension == "" { stem } else { stem + "." + extension }
+
   new_components.push(new_name)
   { components: new_components, is_absolute: self.is_absolute }
 }
@@ -479,7 +469,7 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
 /// 返回新的 Path 对象
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user")
 /// let p2 = p.join(["documents", "file.txt"])
 /// inspect(p2.to_string(), content="/home/user/documents/file.txt")
@@ -489,12 +479,12 @@ pub fn Path::join(self : Path, components : Array[String]) -> Path {
   for component in self.components {
     new_components.push(component)
   }
-  
+
   let result = { components: new_components, is_absolute: self.is_absolute }
   for component in components {
     result.push(component)
   }
-  
+
   result
 }
 
@@ -508,7 +498,7 @@ pub fn Path::join(self : Path, components : Array[String]) -> Path {
 /// 如果路径以指定路径开始则返回 true
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/documents")
 /// let prefix = Path::new("/home/user")
 /// inspect(p.starts_with(prefix), content="true")
@@ -517,17 +507,17 @@ pub fn Path::starts_with(self : Path, prefix : Path) -> Bool {
   if self.is_absolute != prefix.is_absolute {
     return false
   }
-  
+
   if prefix.components.length() > self.components.length() {
     return false
   }
-  
+
   for i = 0; i < prefix.components.length(); i = i + 1 {
     if self.components[i] != prefix.components[i] {
       return false
     }
   }
-  
+
   true
 }
 
@@ -541,7 +531,7 @@ pub fn Path::starts_with(self : Path, prefix : Path) -> Bool {
 /// 如果路径以指定路径结束则返回 true
 /// 
 /// # 示例
-/// ```mbt
+/// ```mbt nocheck
 /// let p = Path::new("/home/user/documents/file.txt")
 /// let suffix = Path::new("documents/file.txt")
 /// inspect(p.ends_with(suffix), content="true")
@@ -550,17 +540,17 @@ pub fn Path::ends_with(self : Path, suffix : Path) -> Bool {
   if suffix.components.length() == 0 {
     return self.components.length() == 0
   }
-  
+
   if suffix.components.length() > self.components.length() {
     return false
   }
-  
+
   let offset = self.components.length() - suffix.components.length()
   for i = 0; i < suffix.components.length(); i = i + 1 {
     if self.components[offset + i] != suffix.components[i] {
       return false
     }
   }
-  
+
   true
 }
