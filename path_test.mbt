@@ -1,4 +1,32 @@
 ///|
+fn expect_some_string(
+  value : String?,
+  expected : String,
+  message : String,
+) -> Unit raise {
+  match value {
+    Some(actual) => inspect(actual, content=expected)
+    None => fail(message)
+  }
+}
+
+///|
+fn expect_no_string(value : String?, message : String) -> Unit raise {
+  match value {
+    None => ()
+    Some(_) => fail(message)
+  }
+}
+
+///|
+fn expect_no_path(value : Path?, message : String) -> Unit raise {
+  match value {
+    None => ()
+    Some(_) => fail(message)
+  }
+}
+
+///|
 test "Path::new - 基本路径创建" {
   let unix_abs = Path::new("/home/user")
   inspect(unix_abs.to_string(), content="/home/user")
@@ -176,48 +204,62 @@ test "当前目录处理特殊情况" {
 test "Path::extension - 获取文件扩展名" {
   // 测试普通文件扩展名
   let p1 = Path::new("file.txt")
-  inspect(p1.extension(), content="Some(\"txt\")")
+  expect_some_string(p1.extension(), "txt", "Should return txt extension")
 
   let p2 = Path::new("/home/user/document.pdf")
-  inspect(p2.extension(), content="Some(\"pdf\")")
+  expect_some_string(p2.extension(), "pdf", "Should return pdf extension")
 
   // 测试多个点的情况
   let p3 = Path::new("archive.tar.gz")
-  inspect(p3.extension(), content="Some(\"gz\")")
+  expect_some_string(p3.extension(), "gz", "Should return gz extension")
 
   // 测试没有扩展名的文件
   let p4 = Path::new("/home/user/README")
-  inspect(p4.extension(), content="None")
+  expect_no_string(p4.extension(), "Should not return extension for README")
 
   // 测试只有点的情况（隐藏文件）
   let p5 = Path::new(".gitignore")
-  inspect(p5.extension(), content="None")
+  expect_no_string(
+    p5.extension(),
+    "Should not return extension for hidden file",
+  )
 
   // 测试以点结尾
   let p6 = Path::new("file.")
-  inspect(p6.extension(), content="None")
+  expect_no_string(
+    p6.extension(),
+    "Should not return extension for trailing dot",
+  )
 }
 
 ///|
 test "Path::file_stem - 获取不带扩展名的文件名" {
   // 测试普通文件
   let p1 = Path::new("file.txt")
-  inspect(p1.file_stem(), content="Some(\"file\")")
+  expect_some_string(p1.file_stem(), "file", "Should return file stem")
 
   let p2 = Path::new("/home/user/document.pdf")
-  inspect(p2.file_stem(), content="Some(\"document\")")
+  expect_some_string(p2.file_stem(), "document", "Should return document stem")
 
   // 测试多个点的情况
   let p3 = Path::new("archive.tar.gz")
-  inspect(p3.file_stem(), content="Some(\"archive.tar\")")
+  expect_some_string(
+    p3.file_stem(),
+    "archive.tar",
+    "Should return archive.tar stem",
+  )
 
   // 测试没有扩展名
   let p4 = Path::new("/home/user/README")
-  inspect(p4.file_stem(), content="Some(\"README\")")
+  expect_some_string(p4.file_stem(), "README", "Should return README stem")
 
   // 测试隐藏文件
   let p5 = Path::new(".gitignore")
-  inspect(p5.file_stem(), content="Some(\".gitignore\")")
+  expect_some_string(
+    p5.file_stem(),
+    ".gitignore",
+    "Should return hidden file name as stem",
+  )
 }
 
 ///|
@@ -367,7 +409,7 @@ test "Path::file_name - 获取文件名" {
 
   // 测试空路径
   let p3 = Path::new("")
-  inspect(p3.file_name(), content="None")
+  expect_no_string(p3.file_name(), "Should not return file name for empty path")
 
   // 测试目录路径
   let p4 = Path::new("/home/user/documents")
@@ -395,7 +437,7 @@ test "Path::parent - 获取父目录" {
 
   // 测试根目录
   let p3 = Path::new("/")
-  inspect(p3.parent(), content="None")
+  expect_no_path(p3.parent(), "Should not return parent for root path")
 
   // 测试相对路径
   let p4 = Path::new("src/lib/utils.mbt")
@@ -413,7 +455,7 @@ test "Path::parent - 获取父目录" {
 
   // 测试空路径
   let p6 = Path::new("")
-  inspect(p6.parent(), content="None")
+  expect_no_path(p6.parent(), "Should not return parent for empty path")
 }
 
 ///|
@@ -465,13 +507,13 @@ test "Path::is_exists - 检查路径是否存在" {
 test "边界情况 - extension 和 file_stem" {
   // 测试只有点的文件名
   let p1 = Path::new(".")
-  inspect(p1.extension(), content="None")
-  inspect(p1.file_stem(), content="None")
+  expect_no_string(p1.extension(), "Should not return extension for dot path")
+  expect_no_string(p1.file_stem(), "Should not return file stem for dot path")
 
   // 测试空路径
   let p2 = Path::new("")
-  inspect(p2.extension(), content="None")
-  inspect(p2.file_stem(), content="None")
+  expect_no_string(p2.extension(), "Should not return extension for empty path")
+  expect_no_string(p2.file_stem(), "Should not return file stem for empty path")
 }
 
 ///|
