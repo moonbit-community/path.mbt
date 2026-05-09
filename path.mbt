@@ -70,7 +70,7 @@ pub fn Path::new(path_str : String) -> Path {
   let is_abs = if platform == "windows" {
     // Windows: 检查是否以驱动器字母开头或UNC路径
     path_str.length() >= 2 &&
-    (path_str[1:2].to_string() == ":" || path_str.strip_prefix("\\\\") != None)
+    (path_str[1:2].to_owned() == ":" || path_str.strip_prefix("\\\\") != None)
   } else {
     // Unix: 检查是否以/开头
     path_str.strip_prefix("/") != None
@@ -107,7 +107,7 @@ fn split_path(path : String) -> Array[String] {
   let result = Array::new()
   let mut current = ""
   for i = 0; i < path.length(); i = i + 1 {
-    let char = path[i:i + 1].to_string()
+    let char = path[i:i + 1].to_owned()
     if is_separator(char) {
       if current != "" {
         result.push(current)
@@ -290,7 +290,7 @@ pub fn Path::to_string(self : Path) -> String {
       // Windows绝对路径处理
       if self.components.length() > 0 {
         let first = self.components[0]
-        if first.length() == 2 && first[1:2].to_string() == ":" {
+        if first.length() == 2 && first[1:2].to_owned() == ":" {
           // 驱动器路径
           let mut result = first + sep
           for i = 1; i < self.components.length(); i = i + 1 {
@@ -364,13 +364,13 @@ pub fn Path::extension(self : Path) -> String? {
     Some(name) => {
       let mut last_dot = -1
       for i = name.length() - 1; i >= 0; i = i - 1 {
-        if name[i:i + 1].to_string() == "." {
+        if name[i:i + 1].to_owned() == "." {
           last_dot = i
           break
         }
       }
       if last_dot > 0 && last_dot < name.length() - 1 {
-        Some(name[last_dot + 1:name.length()].to_string())
+        Some(name[last_dot + 1:name.length()].to_owned())
       } else {
         None
       }
@@ -397,13 +397,13 @@ pub fn Path::file_stem(self : Path) -> String? {
     Some(name) => {
       let mut last_dot = -1
       for i = name.length() - 1; i >= 0; i = i - 1 {
-        if name[i:i + 1].to_string() == "." {
+        if name[i:i + 1].to_owned() == "." {
           last_dot = i
           break
         }
       }
       if last_dot > 0 {
-        Some(name[0:last_dot].to_string())
+        Some(name[0:last_dot].to_owned())
       } else {
         Some(name)
       }
@@ -441,14 +441,14 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
   let last_component = self.components[self.components.length() - 1]
   let mut last_dot = -1
   for i = last_component.length() - 1; i >= 0; i = i - 1 {
-    if last_component[i:i + 1].to_string() == "." {
+    if last_component[i:i + 1].to_owned() == "." {
       last_dot = i
       break
     }
   }
 
   let stem = if last_dot > 0 {
-    last_component[0:last_dot].to_string()
+    last_component[0:last_dot].to_owned()
   } else {
     last_component
   }
