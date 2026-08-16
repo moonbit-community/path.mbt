@@ -19,6 +19,7 @@ pub fn Path::is_exists(Self) -> Bool
 pub fn Path::is_file(Self) -> Bool
 pub fn Path::join(Self, Array[String]) -> Self
 pub fn Path::new(String) -> Self
+pub fn Path::output(Self, &Logger) -> Unit
 pub fn Path::parent(Self) -> Self?
 pub fn Path::pop(Self) -> String?
 pub fn Path::push(Self, String) -> Unit

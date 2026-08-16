@@ -347,6 +347,9 @@ pub impl Show for Path with output(self, logger) {
 }
 
 ///|
+pub extend Path with Show::{output}
+
+///|
 /// 获取文件扩展名
 /// 
 /// # 返回值
