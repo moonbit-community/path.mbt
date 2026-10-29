@@ -65,7 +65,7 @@ fn is_separator(c : String) -> Bool {
 /// ```
 pub fn Path::new(path_str : String) -> Path {
   if path_str == "" {
-    return { components: [], is_absolute: false }
+    return { components: [], is_absolute: false, }
   }
   let is_abs = if platform == "windows" {
     // Windows: 检查是否以驱动器字母开头或UNC路径
@@ -78,7 +78,7 @@ pub fn Path::new(path_str : String) -> Path {
 
   // 分割路径字符串
   let parts = split_path(path_str)
-  let components = Array::new()
+  let components = Array()
   for part in parts {
     if part != "" && part != "." {
       if part == ".." {
@@ -98,13 +98,13 @@ pub fn Path::new(path_str : String) -> Path {
       }
     }
   }
-  { components, is_absolute: is_abs }
+  { components, is_absolute: is_abs, }
 }
 
 ///|
 /// 分割路径字符串
 fn split_path(path : String) -> Array[String] {
-  let result = Array::new()
+  let result = Array()
   let mut current = ""
   for i = 0; i < path.length(); i = i + 1 {
     let char = path[i:i + 1].to_owned()
@@ -211,13 +211,13 @@ pub fn Path::parent(self : Path) -> Path? {
   if len == 0 {
     None
   } else if len == 1 && !self.is_absolute {
-    Some({ components: [], is_absolute: false })
+    Some({ components: [], is_absolute: false, })
   } else {
-    let parent_components = Array::new()
+    let parent_components = Array()
     for i = 0; i < len - 1; i = i + 1 {
       parent_components.push(self.components[i])
     }
-    Some({ components: parent_components, is_absolute: self.is_absolute })
+    Some({ components: parent_components, is_absolute: self.is_absolute, })
   }
 }
 
@@ -237,7 +237,7 @@ pub fn Path::to_absolute(self : Path) -> String {
     let current_dir = get_current_dir()
     let current_path = Path::new(current_dir)
     // 将当前路径的组件复制到新的组件数组中
-    let absolute_components = Array::new()
+    let absolute_components = Array()
     for component in current_path.components {
       absolute_components.push(component)
     }
@@ -342,7 +342,7 @@ pub fn Path::to_string(self : Path) -> String {
 }
 
 ///|
-pub impl Show for Path with output(self, logger) {
+pub impl Show for Path with fn output(self, logger) {
   logger.write_string(self.to_string())
 }
 
@@ -428,10 +428,10 @@ pub fn Path::file_stem(self : Path) -> String? {
 /// inspect(p2.to_string(), content="/home/user/file.md")
 /// ```
 pub fn Path::with_extension(self : Path, extension : String) -> Path {
-  let new_components = Array::new()
+  let new_components = Array()
 
   if self.components.length() == 0 {
-    return { components: new_components, is_absolute: self.is_absolute }
+    return { components: new_components, is_absolute: self.is_absolute, }
   }
 
   for i = 0; i < self.components.length() - 1; i = i + 1 {
@@ -456,7 +456,7 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
   let new_name = if extension == "" { stem } else { stem + "." + extension }
 
   new_components.push(new_name)
-  { components: new_components, is_absolute: self.is_absolute }
+  { components: new_components, is_absolute: self.is_absolute, }
 }
 
 ///|
@@ -475,12 +475,12 @@ pub fn Path::with_extension(self : Path, extension : String) -> Path {
 /// inspect(p2.to_string(), content="/home/user/documents/file.txt")
 /// ```
 pub fn Path::join(self : Path, components : Array[String]) -> Path {
-  let new_components = Array::new()
+  let new_components = Array()
   for component in self.components {
     new_components.push(component)
   }
 
-  let result = { components: new_components, is_absolute: self.is_absolute }
+  let result = { components: new_components, is_absolute: self.is_absolute, }
   for component in components {
     result.push(component)
   }
